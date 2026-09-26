@@ -111,7 +111,7 @@ Day 26-27  Guardrails, injection defence, tracing, cost controls · Higgsfield m
 
 | Day | Date | Topics | Build |
 |---|---|---|---|
-| 26 | 10-20 | **AI security**: direct & indirect **prompt injection**, jailbreaks, data exfiltration, OWASP LLM Top 10, PII redaction, guardrails, securing agents, tools and MCP | Injection test set + input/output guards |
+| 26 | 10-20 | **AI security**: direct & indirect **prompt injection**, jailbreaks, data exfiltration, OWASP LLM Top 10, PII redaction, guardrails, securing agents, tools and MCP | Injection test set + input/output guards (compare an LLM judge vs a Jev `Noul` verifier on cost/latency/accuracy) |
 | 27 | 10-21 | **AI evaluation** in CI, **observability** (traces, OpenTelemetry, token/cost dashboards), **cost optimisation** (prompt caching, semantic caching, model routing, batching) · **Generative media via Higgsfield API** (100+ image/video models, async submit → poll/webhook, cost control, storing outputs) | Tracing + cost report · "visual summary" feature via Higgsfield |
 
 ## Phase 11 — System design & interview (Days 28–30)
@@ -140,7 +140,7 @@ Interview-level: what it is, why it matters, when you'd use it, one trade-off.
 | 14 | GraphRAG | 25 | Prompt optimisation (DSPy, GEPA) |
 | 15 | Agentic RAG | 26 | Guardrail models & constitutional approaches |
 | 16 | **JEPA & world models** (LeCun: predict in embedding space, not tokens) | 27 | State-space models (Mamba) & hybrids |
-| 17 | LLM-as-judge pitfalls | | |
+| 17 | **System One models — TypeSafe Jev** (typed probabilistic decisions vs LLM-as-judge) | | |
 
 ---
 
