@@ -28,10 +28,10 @@ Day 12-13  Embeddings + tenant-isolated vector store
 Day 14-17  Ingestion (OCR) → chunking → hybrid retrieval → rerank → grounded Q&A with citations → evals
 Day 18-20  Agentic assistant: tools, memory, multi-step tasks, human approval
 Day 21-22  MCP server exposing the same capabilities to AI clients
-Day 23     Swap in a company's OWN model (self-hosted, OpenAI-compatible) with zero app changes
+Day 23     Open models via Hugging Face → fine-tune (LoRA) → serve as the company's OWN model, zero app changes
 Day 24     Expose it: REST + SSE + webhooks + generated SDKs; called from a Node service
 Day 25     Deploy it: Docker, CI/CD, Hetzner + TLS, workers, scaling
-Day 26-27  Guardrails, injection defence, tracing, cost controls · Higgsfield media generation
+Day 26-27  Guardrails, injection defence, tracing, cost controls · public demo on Hugging Face Spaces
 ```
 
 ---
@@ -57,7 +57,7 @@ Day 26-27  Guardrails, injection defence, tracing, cost controls · Higgsfield m
 
 | Day | Date | Topics | Build |
 |---|---|---|---|
-| 7 | 10-01 | What an LLM is, pre-training → SFT → RLHF, **tokens & BPE**, **context windows**, why models hallucinate, **reasoning models** & test-time compute | Token counter + context-budget helper |
+| 7 | 10-01 | What an LLM is, pre-training → SFT → RLHF, **tokens & BPE**, **context windows**, why models hallucinate, **reasoning models** & test-time compute · first contact with **Hugging Face**: the Hub, model cards, `tokenizers` | Token counter with HF `AutoTokenizer` (compare 3 models' token counts) + context-budget helper |
 | 8 | 10-02 | LLM APIs: roles/system prompt, sampling params, **streaming**, **provider abstraction** (Azure OpenAI / Claude / Ollama / self-hosted), rate limits, retries, cost | `llm/` gateway interface + `/summarize` (map-reduce for long docs) |
 | 9 | 10-03 | **Prompt engineering**, **structured output** (JSON schema + Pydantic), **function calling** intro, **context engineering** | Invoice/contract field extraction → validated model |
 
@@ -72,7 +72,7 @@ Day 26-27  Guardrails, injection defence, tracing, cost controls · Higgsfield m
 
 | Day | Date | Topics | Build |
 |---|---|---|---|
-| 12 | 10-06 | **Embeddings**, **vectors**, **cosine similarity** vs dot vs L2, sentence-transformers, normalisation, embedding model choice | Semantic search in pure NumPy |
+| 12 | 10-06 | **Embeddings**, **vectors**, **cosine similarity** vs dot vs L2, **sentence-transformers from the HF Hub**, normalisation, choosing a model with the **MTEB leaderboard** | Semantic search: HF embedding model + NumPy |
 | 13 | 10-07 | **Vector DBs** (Chroma, pgvector, Qdrant), ANN, **HNSW**, IVF, metadata filtering, **multi-tenant isolation** | Tenant-isolated vector store in `docintel` |
 
 ## Phase 6 — RAG deeply (Days 14–17)
@@ -81,7 +81,7 @@ Day 26-27  Guardrails, injection defence, tracing, cost controls · Higgsfield m
 |---|---|---|---|
 | 14 | 10-08 | **Document intelligence & OCR** (Azure DI vs PaddleOCR fallback, layout, tables, **multimodal** LLMs on page images), **chunking** strategies | Ingestion: file → text → chunks → embeddings (async worker) |
 | 15 | 10-09 | **RAG** end-to-end, why it reduces hallucination, **retrieval**, grounded prompts, **citations**, streaming answers | `/documents/{id}/ask` with citations |
-| 16 | 10-10 | **Hybrid search** (BM25 + vectors, RRF), **reranking**, query rewriting, **agentic RAG**, **GraphRAG** (when it's worth it), long-context vs RAG | Hybrid + rerank stage |
+| 16 | 10-10 | **Hybrid search** (BM25 + vectors, RRF), **reranking** (HF cross-encoders), query rewriting, **agentic RAG**, **GraphRAG** (when it's worth it), long-context vs RAG | Hybrid + rerank stage |
 | 17 | 10-11 | **RAG evaluation** (faithfulness, relevance, context precision/recall), golden sets, LLM-as-judge, failure modes, **RAG security** | Eval suite in pytest |
 
 ## Phase 7 — Agentic AI (Days 18–20)
@@ -90,7 +90,7 @@ Day 26-27  Guardrails, injection defence, tracing, cost controls · Higgsfield m
 |---|---|---|---|
 | 18 | 10-12 | **Tool calling** in depth: schemas, the tool loop, parallel calls, errors, idempotency | Tools: `search_documents`, `summarize`, `check_compliance` |
 | 19 | 10-13 | **AI agents** & **agentic AI**: LLM vs agent vs workflow, ReAct, planning, **agent memory** (short/long-term), state machines, stopping conditions, **human-in-the-loop** approval | Agentic document assistant (LangGraph-style graph) |
-| 20 | 10-14 | Agentic patterns (router, orchestrator-workers, evaluator-optimizer), **multi-agent** systems, **A2A protocol**, **computer-use / browser agents**, **text-to-SQL** with safety, agent evaluation | KPI-validation agent with read-only SQL tool |
+| 20 | 10-14 | Agentic patterns (router, orchestrator-workers, evaluator-optimizer), frameworks (LangGraph, HF **smolagents**, agent SDKs), **multi-agent** systems, **A2A protocol**, **computer-use / browser agents**, **text-to-SQL** with safety, agent evaluation | KPI-validation agent with read-only SQL tool |
 
 ## Phase 8 — MCP (Days 21–22)
 
@@ -103,16 +103,16 @@ Day 26-27  Guardrails, injection defence, tracing, cost controls · Higgsfield m
 
 | Day | Date | Topics | Build |
 |---|---|---|---|
-| 23 | 10-17 | **Company's own LLM**: when to self-host, **fine-tuning vs RAG**, **LoRA / QLoRA**, **quantization** (GGUF, AWQ, FP8), **serving** (vLLM, SGLang, TGI, Ollama), **OpenAI-compatible endpoints**, GPU sizing (VRAM math), throughput vs latency, batching, **speculative decoding**, **model gateway** (LiteLLM-style routing + fallback), air-gapped / on-prem | Run a local model behind an OpenAI-compatible server; switch `docintel` to it by config only |
+| 23 | 10-17 | **Hugging Face → company's own LLM**: the Hub (open models, licences, private org repos, gated models, tokens), `transformers` pipelines & `AutoModel`, picking a model (leaderboards, size vs quality), **HF Inference Providers** (OpenAI-compatible router) & **Inference Endpoints** (dedicated GPU), **fine-tuning vs RAG**, **LoRA / QLoRA** with **PEFT + TRL**, pushing an adapter to a private repo, **quantization** (GGUF, AWQ, FP8), **serving** (vLLM, TGI, SGLang, Ollama), GPU sizing (VRAM math), batching, **speculative decoding**, **model gateway** with fallback, air-gapped / on-prem | Open model from HF → served locally behind an OpenAI-compatible API → `docintel` switched to it by config only · small LoRA fine-tune demo |
 | 24 | 10-18 | **Exposing an AI service**: REST + OpenAPI, **SSE streaming**, **async jobs + webhooks** (HMAC-signed), idempotency keys, versioning, API keys vs OAuth2 client-credentials vs JWT, rate limits & quotas per tenant, **generated SDKs** (TS/Java/C#), gRPC, queue-based integration, embeddable widget, **integration patterns**: separate microservice vs sidecar vs Python library vs MCP | Call `docintel` from a **Node/TypeScript service** using a generated client; webhook receiver |
 | 25 | 10-19 | **Deployment**: Dockerfile (multi-stage, non-root), docker compose (api + worker + queue + vector DB + Postgres), **CI/CD** (GitHub Actions: test → build → push → deploy), Hetzner + Caddy TLS, secrets, health/readiness probes, horizontal scaling of workers, GPU vs CPU nodes, Kubernetes concepts, zero-downtime deploys | `docintel` running on a server with HTTPS |
 
-## Phase 10 — Production & generative media (Days 26–27)
+## Phase 10 — Production (Days 26–27)
 
 | Day | Date | Topics | Build |
 |---|---|---|---|
 | 26 | 10-20 | **AI security**: direct & indirect **prompt injection**, jailbreaks, data exfiltration, OWASP LLM Top 10, PII redaction, guardrails, securing agents, tools and MCP | Injection test set + input/output guards (compare an LLM judge vs a Jev `Noul` verifier on cost/latency/accuracy) |
-| 27 | 10-21 | **AI evaluation** in CI, **observability** (traces, OpenTelemetry, token/cost dashboards), **cost optimisation** (prompt caching, semantic caching, model routing, batching) · **Generative media via Higgsfield API** (100+ image/video models, async submit → poll/webhook, cost control, storing outputs) | Tracing + cost report · "visual summary" feature via Higgsfield |
+| 27 | 10-21 | **AI evaluation** in CI (HF `evaluate`, `datasets` for golden sets), **observability** (traces, OpenTelemetry, token/cost dashboards), **cost optimisation** (prompt caching, semantic caching, model routing, batching) · **HF Spaces + Gradio** for demos | Tracing + cost report · public `docintel` demo on HF Spaces |
 
 ## Phase 11 — System design & interview (Days 28–30)
 
@@ -149,4 +149,4 @@ Interview-level: what it is, why it matters, when you'd use it, one trade-off.
 | Day | Date | Done | Gaps found |
 |---|---|---|---|
 | 1 | 09-25 | S1: 1.1–1.7 taught (memory model, strings, lists, tuples, sets, dicts) | `[row] * n` shares references; composite set members need a tuple |
-| 2 | 09-26 | Repo + uv set up; roadmap v2 (agentic AI, own models, integration, deployment, Higgsfield, frontier concepts) | — |
+| 2 | 09-26 | Repo + uv set up; roadmap v2 (agentic AI, own models, integration, deployment, frontier concepts, Jev); Higgsfield → Hugging Face (user meant HF) | — |
