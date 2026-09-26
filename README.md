@@ -3,6 +3,8 @@
 Practice repo for the 30-day plan: **Python recap → FastAPI → LLMs → RAG → Agents → MCP → AI system design**,
 with NeuroDocx as the running case study.
 
+📍 **Full 30-day plan: [ROADMAP.md](ROADMAP.md)**
+
 Learn on one laptop, code here on the other. New exercises get pushed after each lesson —
 run `git pull` before you start.
 
