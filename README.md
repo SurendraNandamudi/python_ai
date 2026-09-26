@@ -20,9 +20,15 @@ uv run pytest              # run all tests
 # Option B — plain venv
 python3 -m venv .venv
 source .venv/bin/activate
-pip install pytest
+pip install -r requirements.txt
 pytest
 ```
+
+### Troubleshooting
+- `Failed to spawn: pytest` → pytest isn't installed in `.venv`. Run `git pull`, then `uv sync`,
+  and make sure you're inside the `python_ai` folder. Check `uv --version` (update: `uv self update`
+  or `brew upgrade uv`). Quick bypass: `uv run --with pytest pytest`.
+- `ModuleNotFoundError: session01` → run pytest from the repo root, not from inside `session01/`.
 
 ## How to practise
 
