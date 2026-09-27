@@ -3,8 +3,8 @@ name = "python-ai"
 version = "0.1.0"
 description = "30-day Python recap -> AI Engineering practice repo"
 requires-python = ">=3.12"
-dependencies = ["pytest>=8"]
+dependencies = ["pytest>=8", "pydantic>=2.9"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
-testpaths = ["session01", "session02", "session06"]
+testpaths = ["session01", "session02", "session03", "session06"]
